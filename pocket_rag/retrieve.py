@@ -35,9 +35,23 @@ class Hit:
     matched_child: str  # 命中的子块原文, 调试/展示用
 
 
+# 中文虚词停用表(小而够用): 不滤掉的话, 「怎么做红烧肉」会靠「怎么」二字
+# 匹配到「怎么处理异常」这种毫无关系的子块并拿到高分, 拒答就形同虚设。
+STOPWORDS = {
+    "的", "了", "是", "在", "我", "有", "和", "就", "不", "都", "一", "一个",
+    "上", "也", "很", "到", "要", "会", "着", "这", "那", "还是", "以及",
+    "或者", "可以", "没有", "你", "好", "说", "看", "去",
+    "怎么", "什么", "哪个", "哪些", "为什么", "如何", "为什么", "吗", "呢", "吧",
+}
+
+
 def tokenize(text: str) -> list[str]:
-    """jieba 分词 + 小写 + 去空白, BM25 与查询两侧必须用同一个函数。"""
-    return [w.lower() for w in jieba.lcut(text) if w.strip()]
+    """jieba 分词 + 小写 + 去空白 + 去停用词。
+
+    BM25 与查询两侧必须用同一个函数——一边滤一边不滤, 得分就没意义了。
+    """
+    return [w.lower() for w in jieba.lcut(text)
+            if w.strip() and w.lower() not in STOPWORDS]
 
 
 class Retriever:

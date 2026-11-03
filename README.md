@@ -56,6 +56,9 @@ python sample_docs/make_sample_pdf.py
 python -m pocket_rag.cli
 python -m pocket_rag.cli "DeepSeek 上 max_tokens 怎么写才生效"
 
+# HTTP 查询接口(供 patch-agent 的 query_knowledge 工具调用)
+python -m pocket_rag.api            # 默认 127.0.0.1:8765, POST /query + GET /health
+
 # 评测: 先离线(秒级), 再全量(真实调用)
 python -m pocket_rag.evals --offline
 python -m pocket_rag.evals
